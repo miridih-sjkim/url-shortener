@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  database:
+    container_name: postgres
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+
+  application:
+    container_name: shorten-url-service
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/postgres
+    depends_on:
+      - database
